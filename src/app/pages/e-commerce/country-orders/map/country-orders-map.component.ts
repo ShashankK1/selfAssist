@@ -1,10 +1,11 @@
+import { HttpService } from './../../../../Services/http.service';
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 
 import * as L from 'leaflet';
 
 import { CountryOrdersMapService } from './country-orders-map.service';
 import { NbThemeService } from '@nebular/theme';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
 
@@ -18,20 +19,17 @@ import { takeWhile } from 'rxjs/operators';
 export class CountryOrdersMapComponent implements OnDestroy {
 
   @Input() countryId: string;
-
   @Output() select: EventEmitter<any> = new EventEmitter();
-
   layers = [];
   currentTheme: any;
   alive = true;
   selectedCountry;
-
   options = {
     zoom: 2,
     minZoom: 2,
     maxZoom: 6,
     zoomControl: false,
-    center: L.latLng({lat: 38.991709, lng: -76.886109}),
+    center: L.latLng({lat: 28.6139, lng: 77.2090}),
     maxBounds: new L.LatLngBounds(
       new L.LatLng(-89.98155760646617, -180),
       new L.LatLng(89.99346179538875, 180),
@@ -40,7 +38,8 @@ export class CountryOrdersMapComponent implements OnDestroy {
   };
 
   constructor(private ecMapService: CountryOrdersMapService,
-              private theme: NbThemeService) {
+              private theme: NbThemeService,
+              private http:HttpService) {
 
     combineLatest([
       this.ecMapService.getCords(),
@@ -120,14 +119,16 @@ export class CountryOrdersMapComponent implements OnDestroy {
   }
 
   private selectFeature(featureLayer) {
+    
     if (featureLayer !== this.selectedCountry) {
       this.resetHighlight(this.selectedCountry);
       this.highlightFeature(featureLayer);
       this.selectedCountry = featureLayer;
-      this.select.emit(featureLayer.feature.properties.name);
+      this.select.emit([featureLayer.feature.properties.name,featureLayer.feature.id]);
     }
   }
 
+  
   private findFeatureLayerByCountryId(id) {
     const layers = this.layers[0].getLayers();
     const featureLayer = layers.find(item => {

@@ -1,3 +1,4 @@
+import { DiagnoseComponent } from './diagnose/diagnose.component';
 import { NgModule } from '@angular/core';
 import {
   NbActionsModule,
@@ -64,6 +65,7 @@ import { FormsModule } from '@angular/forms';
     SolarComponent,
     TrafficComponent,
     TrafficChartComponent,
+    DiagnoseComponent
   ],
 })
 export class DashboardModule { }

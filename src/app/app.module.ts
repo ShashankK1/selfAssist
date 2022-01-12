@@ -39,6 +39,7 @@ import {
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
+    HttpClientModule
   ],
   bootstrap: [AppComponent],
 })

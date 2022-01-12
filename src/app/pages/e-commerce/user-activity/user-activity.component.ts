@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { HttpService } from './../../../Services/http.service';
+import { Component, OnDestroy, OnInit, NgZone } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 
@@ -9,17 +10,28 @@ import { UserActivityData, UserActive } from '../../../@core/data/user-activity'
   styleUrls: ['./user-activity.component.scss'],
   templateUrl: './user-activity.component.html',
 })
-export class ECommerceUserActivityComponent implements OnDestroy {
+export class ECommerceUserActivityComponent implements OnInit,OnDestroy {
 
   private alive = true;
 
   userActivity: UserActive[] = [];
-  type = 'month';
+  type = '1';
   types = ['week', 'month', 'year'];
+  pageNumber = [1,2,3,4,5];
+  pageStart = 1;
   currentTheme: string;
+  
+  news:{
+    date:Date,
+    titles:string,
+    url:string
+  }[] = [];
+ 
 
   constructor(private themeService: NbThemeService,
-              private userActivityService: UserActivityData) {
+              private userActivityService: UserActivityData,
+              private http:HttpService,
+              private ngZone:NgZone) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
@@ -29,12 +41,30 @@ export class ECommerceUserActivityComponent implements OnDestroy {
     this.getUserActivity(this.type);
   }
 
-  getUserActivity(period: string) {
-    this.userActivityService.getUserActivityData(period)
-      .pipe(takeWhile(() => this.alive))
-      .subscribe(userActivityData => {
-        this.userActivity = userActivityData;
+  ngOnInit(): void {
+  }
+
+
+  getUserActivity(period) {
+    period = period.toString();
+    this.getCovidNews(period);
+    // this.userActivityService.getUserActivityData(period)
+    //   .pipe(takeWhile(() => this.alive))
+    //   .subscribe(userActivityData => {
+    //     this.userActivity = userActivityData;
+    //   });
+  }
+
+  getCovidNews(pageNumber:string){
+    this.news = [];
+    this.http.getCovidNews(pageNumber).subscribe((res:any)=>{
+      let data:any[] = res['news'];
+      
+      data.map((x)=>{
+          this.news.push({date:x['pubDate'],titles:x['title'],url:x['link']});
       });
+      
+    })
   }
 
   ngOnDestroy() {

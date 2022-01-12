@@ -1,0 +1,50 @@
+<nb-card [size]="'small'">
+
+    <nb-card-header>
+        <div class="d-flex flex-wrap align-items-baseline ">
+
+            <nb-select id="feature" [selected]="currentSymptom" (selectedChange)="onSelectionChange($event)" class="ml-3 mt-3">
+                <nb-option *ngFor="let x of allSymptoms" [value]="x">{{x}}</nb-option>
+            </nb-select>
+            <button type="button" class="btn btn-success ml-3 mt-3" (click)="onSymptomAdd()">Add</button>
+            <button type="button" class="btn btn-danger ml-3 mt-3" (click)="onSymptomRemove()">Remove</button>
+            <div class="input-group ml-3 mt-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Values</span>
+                </div>
+                <input [(ngModel)]="currentValue"  type="text" class="form-control" placeholder="values of selected feature" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            <button type="button" class="btn btn-success ml-3 mt-3" (click)="startAnalyze()">Analyze</button>
+        </div>
+    </nb-card-header>
+    
+        
+    <nb-list class="symptom-values-container">
+        <nb-list-item *ngFor="let x of selectedSymptoms;let i=index" (click)="selectFeatureByClick(x)" style="cursor: pointer;">
+            <div>
+                <span class="font-weight-bold ml-4">{{x.symptom}}  [Value : {{x.value}}]</span>
+            </div>
+        </nb-list-item>
+    </nb-list>
+    
+</nb-card>
+<nb-card *ngIf="readableResult.length > 0">
+    <nb-card-header>
+        Result Of your Symptoms
+    </nb-card-header>
+    <nb-list>
+        <nb-list-item *ngFor="let x of readableResult">
+            <div>
+
+                <span class="font-weight-bold ml-4 text-danger">{{x.disease}}</span>
+            </div>
+            <div>
+
+                <span class="font-weight-bold text-success">[Chances :{{(x.percentage[0]*100).toFixed(2)}}%]</span>
+            </div>
+        </nb-list-item>
+    </nb-list>
+</nb-card>
+            
+
+          

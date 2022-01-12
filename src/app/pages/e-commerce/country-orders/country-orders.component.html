@@ -1,0 +1,15 @@
+<nb-card [size]="breakpoint.width >= breakpoints.md ? 'medium' : 'giant'">
+    <nb-card-header>Country Covid Statistics</nb-card-header>
+    <nb-card-body>
+      <ngx-country-orders-map (select)="selectCountryById($event)"
+                              [countryId]="countryIso">
+      </ngx-country-orders-map>
+      
+      <ngx-country-orders-chart [countryName]="countryName"
+                                [data]="countryData"
+                                [labels]="countriesCategories"
+                                [riskRate]="riskRate"
+                                >
+      </ngx-country-orders-chart>
+    </nb-card-body>
+</nb-card>

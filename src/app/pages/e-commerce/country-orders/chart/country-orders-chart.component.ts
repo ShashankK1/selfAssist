@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { HttpService } from './../../../../Services/http.service';
+import { CountryOrdersMapService } from './../map/country-orders-map.service';
+import { AfterViewInit, Component, Input, OnChanges, OnDestroy, SimpleChanges, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 import { LayoutService } from '../../../../@core/utils/layout.service';
@@ -10,53 +12,65 @@ import { LayoutService } from '../../../../@core/utils/layout.service';
   template: `
     <div class="header">
       <span class="caption">Selected Country/Region</span>
-      <h2 class="h4">{{ countryName }}</h2>
+      <h2 class="h4">{{ countryName }}<span class="h6">(Infection Risk : {{riskRate}})</span></h2>
     </div>
     <div echarts
+         
          [options]="option"
          class="echart"
-         (chartInit)="onChartInit($event)">
+         (chartInit)="onChartInit($event)"
+         >
     </div>
   `,
 })
 export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   @Input() countryName: string;
-  @Input() data: number[];
   @Input() maxValue: number;
   @Input() labels: string[];
-
+  @Input() riskRate:string;
+  @Input() data:string[];
   private alive = true;
-
   option: any = {};
   echartsInstance;
+  
 
   constructor(private theme: NbThemeService,
-              private layoutService: LayoutService) {
+              private layoutService: LayoutService,
+              private mapService:CountryOrdersMapService,
+              private http:HttpService) {
+                
     this.layoutService.onSafeChangeLayoutSize()
       .pipe(
         takeWhile(() => this.alive),
       )
       .subscribe(() => this.resizeChart());
+
   }
 
+  
   ngOnChanges(changes: SimpleChanges): void {
+    
     if (changes.data && !changes.data.isFirstChange()) {
       this.echartsInstance.setOption({
         series: [
           {
-            data: this.data.map(v => this.maxValue),
+            data:this.data
           },
           {
-            data: this.data,
+            data:this.data
           },
           {
             data: this.data,
           },
         ],
       });
+      
     }
+    
+    
   }
+
 
   ngAfterViewInit() {
     this.theme.getJsTheme()
@@ -75,7 +89,7 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
           xAxis: {
             axisLabel: {
               color: countriesTheme.chartAxisTextColor,
-              fontSize: countriesTheme.chartAxisFontSize,
+              fontSize: 1,
             },
             axisLine: {
               lineStyle: {
@@ -112,8 +126,8 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
           series: [
             { // For shadow
               type: 'bar',
-              data: this.data.map(v => this.maxValue),
               cursor: 'default',
+              data:this.data,
               itemStyle: {
                 normal: {
                   color: countriesTheme.chartInnerLineColor,
@@ -128,8 +142,8 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
             },
             { // For bottom line
               type: 'bar',
-              data: this.data,
               cursor: 'default',
+              data:this.data,
               itemStyle: {
                 normal: {
                   color: countriesTheme.chartLineBottomShadowColor,
@@ -143,6 +157,7 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
             },
             {
               type: 'bar',
+              
               barWidth: '35%',
               data: this.data,
               cursor: 'default',
@@ -168,6 +183,8 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
     this.echartsInstance = ec;
   }
 
+  
+
   resizeChart() {
     if (this.echartsInstance) {
       this.echartsInstance.resize();
@@ -177,5 +194,7 @@ export class CountryOrdersChartComponent implements AfterViewInit, OnDestroy, On
   ngOnDestroy() {
     this.alive = false;
   }
+
+ 
 
 }

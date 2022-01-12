@@ -15,7 +15,7 @@ const routes: Routes = [{
       component: ECommerceComponent,
     },
     {
-      path: 'iot-dashboard',
+      path: 'diagnose',
       component: DashboardComponent,
     },
     {

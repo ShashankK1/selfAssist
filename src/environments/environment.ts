@@ -10,4 +10,6 @@
 
 export const environment = {
   production: false,
+  CORONA_URL:'https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/',
+  CORONA_NEWS:'https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/news/get-coronavirus-news/'
 };

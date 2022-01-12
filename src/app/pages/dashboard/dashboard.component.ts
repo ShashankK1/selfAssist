@@ -34,10 +34,10 @@ export class DashboardComponent implements OnDestroy {
     iconClass: 'nb-audio',
     type: 'info',
   };
-  coffeeMakerCard: CardSettings = {
-    title: 'Coffee Maker',
-    iconClass: 'nb-coffee-maker',
-    type: 'warning',
+  DiagnoseCard: CardSettings = {
+    title: 'Diagnose',
+    iconClass: 'nb-lightbulb',
+    type: 'primary',
   };
 
   statusCards: string;
@@ -46,7 +46,7 @@ export class DashboardComponent implements OnDestroy {
     this.lightCard,
     this.rollerShadesCard,
     this.wirelessAudioCard,
-    this.coffeeMakerCard,
+    this.DiagnoseCard,
   ];
 
   statusCardsByThemes: {
@@ -71,7 +71,7 @@ export class DashboardComponent implements OnDestroy {
         type: 'danger',
       },
       {
-        ...this.coffeeMakerCard,
+        ...this.DiagnoseCard,
         type: 'info',
       },
     ],
@@ -92,6 +92,7 @@ export class DashboardComponent implements OnDestroy {
         this.solarValue = data;
       });
   }
+
 
   ngOnDestroy() {
     this.alive = false;
